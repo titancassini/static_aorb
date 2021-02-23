@@ -12,7 +12,7 @@
 	<atom:link href="./index.html" rel="self" type="application/rss+xml" />
 	<link>./../../../../index.html</link>
 	<description>For Solidarity and Social Revolution</description>
-	<lastBuildDate>Wed, 23 Dec 2020 22:56:10 +0000</lastBuildDate>
+	<lastBuildDate>Tue, 23 Feb 2021 00:17:11 +0000</lastBuildDate>
 	<language>en-US</language>
 	<sy:updatePeriod>
 	hourly	</sy:updatePeriod>
@@ -28,10 +28,24 @@
 	<height>32</height>
 </image> 
 	<item>
+		<title>Ken Weller 1935-2021</title>
+		<link>./../../../2021/02/23/ken-weller-1935-2021/index.html</link>
+		
+		<dc:creator><![CDATA[Editorial]]></dc:creator>
+		<pubDate>Tue, 23 Feb 2021 00:17:11 +0000</pubDate>
+				<category><![CDATA[Articles]]></category>
+		<guid isPermaLink="false">./../../../../index.html?p=116</guid>
+
+					<description><![CDATA[ A working class militant who took direct action against the threat of nuclear war and advocated workers’ control of production and society.]]></description>
+		
+		
+		
+			</item>
+		<item>
 		<title>Coming soon</title>
 		<link>./../../../2020/12/23/coming-soon/index.html</link>
 		
-		<dc:creator><![CDATA[tcassini]]></dc:creator>
+		<dc:creator><![CDATA[Editorial]]></dc:creator>
 		<pubDate>Wed, 23 Dec 2020 22:53:41 +0000</pubDate>
 				<category><![CDATA[Articles]]></category>
 		<guid isPermaLink="false">./../../../../index.html?p=62</guid>
