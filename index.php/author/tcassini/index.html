@@ -172,6 +172,29 @@ img.emoji {
 <script data-cfasync="false">
 window.a2a_config=window.a2a_config||{};a2a_config.callbacks=[];a2a_config.overlays=[];a2a_config.templates={};
 a2a_config.icon_color="#000000";
+a2a_config.callbacks.push({
+    share: function(share_data) {
+        // Some fragment identifier
+        var add_domain = 'https://aorb.info/';
+        // The shared URL
+        var old_url = share_data.url;
+        // Initialize new shared URL
+        var new_url = old_url;
+
+        // Add fragment identifier if not already added to the shared URL
+        if ( old_url.indexOf(add_domain, old_url.length - add_domain.length) === -1 ) {
+            new_url = add_domain + old_url;
+        }
+
+        // Modify the share by returning an object
+        // with a "url" property containing the new URL
+        if (new_url != old_url) {
+            return {
+                url: new_url
+            };
+        }
+    }
+});
 (function(d,s,a,b){a=d.createElement(s);b=d.getElementsByTagName(s)[0];a.async=1;a.src="https://static.addtoany.com/menu/page.js";b.parentNode.insertBefore(a,b);})(document,"script");
 </script>
 	<script>document.documentElement.className = document.documentElement.className.replace( 'no-js', 'js' );</script>
