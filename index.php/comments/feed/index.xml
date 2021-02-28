@@ -8,8 +8,8 @@
 <channel>
 	<title>
 	Comments for A or B	</title>
-	<atom:link href="/index.php/comments/feed/" rel="self" type="application/rss+xml" />
-	<link></link>
+	<atom:link href="http://https://aorb.info/index.php/comments/feed/" rel="self" type="application/rss+xml" />
+	<link>http://https://aorb.info</link>
 	<description>For Solidarity and Social Revolution</description>
 	<lastBuildDate>Sat, 27 Feb 2021 22:53:54 +0000</lastBuildDate>
 	<sy:updatePeriod>

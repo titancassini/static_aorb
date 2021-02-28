@@ -9,8 +9,8 @@
 
 <channel>
 	<title>Editorial &#8211; A or B</title>
-	<atom:link href="/index.php/author/tcassini/feed/" rel="self" type="application/rss+xml" />
-	<link></link>
+	<atom:link href="http://https://aorb.info/index.php/author/tcassini/feed/" rel="self" type="application/rss+xml" />
+	<link>http://https://aorb.info</link>
 	<description>For Solidarity and Social Revolution</description>
 	<lastBuildDate>Sat, 27 Feb 2021 22:53:54 +0000</lastBuildDate>
 	<language>en-US</language>
@@ -21,20 +21,20 @@
 	<generator>https://wordpress.org/?v=5.6.2</generator>
 
 <image>
-	<url>/wp-content/uploads/2020/12/cropped-Time_-Bomb_612x612-32x32.png</url>
+	<url>http://https://aorb.info/wp-content/uploads/2020/12/cropped-Time_-Bomb_612x612-32x32.png</url>
 	<title>Editorial &#8211; A or B</title>
-	<link></link>
+	<link>http://https://aorb.info</link>
 	<width>32</width>
 	<height>32</height>
 </image> 
 	<item>
 		<title>Ken Weller 1935-2021</title>
-		<link>/index.php/2021/02/23/ken-weller-1935-2021/</link>
+		<link>http://https://aorb.info/index.php/2021/02/23/ken-weller-1935-2021/</link>
 		
 		<dc:creator><![CDATA[Editorial]]></dc:creator>
 		<pubDate>Tue, 23 Feb 2021 00:17:11 +0000</pubDate>
 				<category><![CDATA[Articles]]></category>
-		<guid isPermaLink="false">/?p=116</guid>
+		<guid isPermaLink="false">http://https://aorb.info/?p=116</guid>
 
 					<description><![CDATA[ A working class militant who took direct action against the threat of nuclear war and advocated workers’ control of production and society.]]></description>
 		
@@ -43,12 +43,12 @@
 			</item>
 		<item>
 		<title>Coming soon</title>
-		<link>/index.php/2020/12/23/coming-soon/</link>
+		<link>http://https://aorb.info/index.php/2020/12/23/coming-soon/</link>
 		
 		<dc:creator><![CDATA[Editorial]]></dc:creator>
 		<pubDate>Wed, 23 Dec 2020 22:53:41 +0000</pubDate>
 				<category><![CDATA[Articles]]></category>
-		<guid isPermaLink="false">/?p=62</guid>
+		<guid isPermaLink="false">http://https://aorb.info/?p=62</guid>
 
 					<description><![CDATA[We plan to publish pamphlets, leaflets, commentary and analysis oriented towards spreading ideas and direct action for an autonomous society.]]></description>
 		
