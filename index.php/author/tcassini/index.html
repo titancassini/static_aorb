@@ -14,23 +14,53 @@
 		
 	<!-- This site is optimized with the Yoast SEO plugin v15.9 - https://yoast.com/wordpress/plugins/seo/ -->
 	<title>Editorial, Author at A or B</title>
-	<meta name="robots" content="noindex, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+	<meta name="description" content="For Solidarity and Social Revolution">
+	<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+	<link rel="canonical" href="/index.php/author/tcassini/">
 	<meta property="og:locale" content="en_US">
 	<meta property="og:type" content="profile">
 	<meta property="og:title" content="Editorial, Author at A or B">
+	<meta property="og:description" content="For Solidarity and Social Revolution">
 	<meta property="og:url" content="/index.php/author/tcassini/">
 	<meta property="og:site_name" content="A or B">
 	<meta property="og:image" content="https://0.gravatar.com/avatar/ca4ce775a17ba64cdbc868061bae2f88?s=500&#038;d=mm&#038;r=g">
 	<meta name="twitter:card" content="summary_large_image">
+	<meta name="twitter:site" content="@A_or_B_UK">
 	<script type="application/ld+json" class="yoast-schema-graph">{
 	    "@context": "https://schema.org",
 	    "@graph": [
+	        {
+	            "@type": "Organization",
+	            "@id": "/#organization",
+	            "name": "Autonomy or Barbarism",
+	            "url": "/",
+	            "sameAs": [
+	                "https://www.facebook.com/The-New-Significance-197738350263020",
+	                "https://www.instagram.com/autonomyorbarbarism/",
+	                "https://twitter.com/A_or_B_UK"
+	            ],
+	            "logo": {
+	                "@type": "ImageObject",
+	                "@id": "/#logo",
+	                "inLanguage": "en-US",
+	                "url": "/wp-content/uploads/2020/12/Time_-Bomb_612x612.png",
+	                "width": 612,
+	                "height": 612,
+	                "caption": "Autonomy or Barbarism"
+	            },
+	            "image": {
+	                "@id": "/#logo"
+	            }
+	        },
 	        {
 	            "@type": "WebSite",
 	            "@id": "/#website",
 	            "url": "/",
 	            "name": "A or B",
 	            "description": "For Solidarity and Social Revolution",
+	            "publisher": {
+	                "@id": "/#organization"
+	            },
 	            "potentialAction": [
 	                {
 	                    "@type": "SearchAction",
@@ -48,6 +78,7 @@
 	            "isPartOf": {
 	                "@id": "/#website"
 	            },
+	            "description": "For Solidarity and Social Revolution",
 	            "breadcrumb": {
 	                "@id": "/index.php/author/tcassini/#breadcrumb"
 	            },
