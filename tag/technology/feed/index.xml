@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+	>
+
+<channel>
+	<title>Technology &#8211; A or B</title>
+	<atom:link href="/tag/technology/feed/" rel="self" type="application/rss+xml" />
+	<link>/</link>
+	<description>For Solidarity and Social Revolution</description>
+	<lastBuildDate>Sun, 21 Jan 2024 23:37:09 +0000</lastBuildDate>
+	<language>en-US</language>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	<generator>https://wordpress.org/?v=6.4.2</generator>
+
+<image>
+	<url>/wp-content/uploads/2024/01/cropped-cropped-Time_-Bomb_White_612x612-1-32x32.png</url>
+	<title>Technology &#8211; A or B</title>
+	<link>/</link>
+	<width>32</width>
+	<height>32</height>
+</image> 
+	<item>
+		<title>Revisiting Chaulieu’s Workers’ Councils and the Economics of a Self-Managed Society</title>
+		<link>/2023/12/28/revisiting-chaulieus-workers-councils-and-the-economics-of-a-self-managed-society/</link>
+		
+		<dc:creator><![CDATA[AorB]]></dc:creator>
+		<pubDate>Thu, 28 Dec 2023 22:55:00 +0000</pubDate>
+				<category><![CDATA[Pamphlets]]></category>
+		<category><![CDATA[Cornelius Castoriadis]]></category>
+		<category><![CDATA[Direct Democracy]]></category>
+		<category><![CDATA[Technology]]></category>
+		<category><![CDATA[Workers' Councils]]></category>
+		<guid isPermaLink="false">/?p=77</guid>
+
+					<description><![CDATA[Pamphlet #1: Integrating modern technological advances into the economic and political framework of a Self-Managed Society amidst the digital and decentralized revolution.]]></description>
+		
+		
+		
+			</item>
+	</channel>
+</rss>

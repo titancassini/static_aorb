@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+	>
+
+<channel>
+	<title>Education &#8211; A or B</title>
+	<atom:link href="/category/education/feed/" rel="self" type="application/rss+xml" />
+	<link>/</link>
+	<description>For Solidarity and Social Revolution</description>
+	<lastBuildDate>Sun, 21 Jan 2024 22:45:37 +0000</lastBuildDate>
+	<language>en-US</language>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	<generator>https://wordpress.org/?v=6.4.2</generator>
+
+<image>
+	<url>/wp-content/uploads/2024/01/cropped-cropped-Time_-Bomb_White_612x612-1-32x32.png</url>
+	<title>Education &#8211; A or B</title>
+	<link>/</link>
+	<width>32</width>
+	<height>32</height>
+</image> 
+	<item>
+		<title>Coming Soon</title>
+		<link>/2024/01/21/coming-soon/</link>
+		
+		<dc:creator><![CDATA[AorB]]></dc:creator>
+		<pubDate>Sun, 21 Jan 2024 22:44:36 +0000</pubDate>
+				<category><![CDATA[Education]]></category>
+		<guid isPermaLink="false">/?p=74</guid>
+
+					<description><![CDATA[Watch this space&#8230;.]]></description>
+		
+		
+		
+			</item>
+	</channel>
+</rss>
