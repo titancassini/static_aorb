@@ -12,7 +12,7 @@
 	<atom:link href="/feed/" rel="self" type="application/rss+xml" />
 	<link>/</link>
 	<description>For Solidarity and Social Revolution</description>
-	<lastBuildDate>Mon, 22 Jan 2024 14:24:32 +0000</lastBuildDate>
+	<lastBuildDate>Mon, 22 Jan 2024 14:36:32 +0000</lastBuildDate>
 	<language>en-US</language>
 	<sy:updatePeriod>
 	hourly	</sy:updatePeriod>
@@ -28,6 +28,20 @@
 	<height>32</height>
 </image> 
 	<item>
+		<title>PDF: Revisiting the Economics of a Self Managed-Society</title>
+		<link>/2024/01/22/pdf-revisiting-the-economics-of-a-self-managed-society/</link>
+		
+		<dc:creator><![CDATA[AorB]]></dc:creator>
+		<pubDate>Mon, 22 Jan 2024 14:33:11 +0000</pubDate>
+				<category><![CDATA[Print]]></category>
+		<guid isPermaLink="false">/?p=130</guid>
+
+					<description><![CDATA[]]></description>
+		
+		
+		
+			</item>
+		<item>
 		<title>Coming Soon</title>
 		<link>/2024/01/21/coming-soon/</link>
 		
