@@ -8,11 +8,11 @@
 	>
 
 <channel>
-	<title>Print &#8211; A or B</title>
-	<atom:link href="/category/print/feed/" rel="self" type="application/rss+xml" />
+	<title>Autonomy &#8211; A or B</title>
+	<atom:link href="/tag/autonomy/feed/" rel="self" type="application/rss+xml" />
 	<link>/</link>
 	<description>For Solidarity and Social Revolution</description>
-	<lastBuildDate>Tue, 23 Jan 2024 10:15:02 +0000</lastBuildDate>
+	<lastBuildDate>Mon, 22 Jan 2024 09:01:27 +0000</lastBuildDate>
 	<language>en-US</language>
 	<sy:updatePeriod>
 	hourly	</sy:updatePeriod>
@@ -22,21 +22,24 @@
 
 <image>
 	<url>/wp-content/uploads/2024/01/cropped-cropped-Time_-Bomb_White_612x612-32x32.png</url>
-	<title>Print &#8211; A or B</title>
+	<title>Autonomy &#8211; A or B</title>
 	<link>/</link>
 	<width>32</width>
 	<height>32</height>
 </image> 
 	<item>
-		<title>Pamphlet PDF: Revisiting the Economics of a Self Managed-Society</title>
-		<link>/2024/01/22/pdf-revisiting-the-economics-of-a-self-managed-society/</link>
+		<title>Maurice Brinton&#8217;s Eulogy for Cornelius Castoriadis</title>
+		<link>/2023/12/13/brinton-castoriadis-eulogy/</link>
 		
 		<dc:creator><![CDATA[AorB]]></dc:creator>
-		<pubDate>Mon, 22 Jan 2024 14:33:11 +0000</pubDate>
-				<category><![CDATA[Print]]></category>
-		<guid isPermaLink="false">/?p=130</guid>
+		<pubDate>Wed, 13 Dec 2023 22:16:00 +0000</pubDate>
+				<category><![CDATA[Articles]]></category>
+		<category><![CDATA[Autonomy]]></category>
+		<category><![CDATA[Cornelius Castoriadis]]></category>
+		<category><![CDATA[London Solidarity]]></category>
+		<guid isPermaLink="false">/?p=62</guid>
 
-					<description><![CDATA[]]></description>
+					<description><![CDATA[Remembering Cornelius Castoriadis through the words of one of his close friends and early English langauge translator, Maurice Brinton]]></description>
 		
 		
 		
