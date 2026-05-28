@@ -42,6 +42,11 @@ jobs:
             ./ deploy/
           echo "Files to upload: $(find deploy -type f | wc -l)"
 
+          echo "Files before prune: $(find deploy -type f | wc -l)"
+
+      - name: Prune deploy for Pinata file limit
+        run: node .github/scripts/prune-deploy.mjs deploy
+
       - name: Pin to Pinata
         id: pin
         env:
@@ -50,7 +55,14 @@ jobs:
           PINATA_API_SECRET: ${{ secrets.PINATA_API_SECRET }}
           PIN_NAME: aorb.info
           MAX_PINS_TO_KEEP: '3'
-        run: node .github/scripts/pin-site.mjs deploy
+        run: |
+          COUNT=$(find deploy -type f | wc -l)
+          echo "Files to pin: ${COUNT}"
+          if [ "$COUNT" -gt 500 ]; then
+            echo "::error::Pinata free plan allows 500 files; deploy has ${COUNT}. Upgrade Pinata or reduce Simply Static export size."
+            exit 1
+          fi
+          node .github/scripts/pin-site.mjs deploy
 
       - name: Update Cloudflare Web3 DNSLink
         id: dnslink
