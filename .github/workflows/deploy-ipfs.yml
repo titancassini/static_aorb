@@ -55,14 +55,89 @@ jobs:
           node pin-site.mjs ../../deploy
 
       - name: Update Cloudflare DNSLink
-        uses: ipshipyard/dnslink-action@v1
-        with:
-          cid: ${{ steps.pin.outputs.cid }}
-          dnslink_domain: aorb.info
-          cf_zone_id: ${{ secrets.CF_ZONE_ID }}
-          cf_auth_token: ${{ secrets.CF_API_TOKEN }}
-          set_github_status: true
-          github_token: ${{ github.token }}
+        id: dnslink
+        env:
+          CID: ${{ steps.pin.outputs.cid }}
+          CF_ZONE_ID: ${{ secrets.CF_ZONE_ID }}
+          CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
+          CF_DNSLINK_RECORD_ID: ${{ secrets.CF_DNSLINK_RECORD_ID }}
+        run: |
+          set -euo pipefail
+
+          RECORD_NAME="_dnslink.aorb.info"
+          RECORD_CONTENT="dnslink=/ipfs/${CID}"
+          CF_API="https://api.cloudflare.com/client/v4"
+
+          echo "Updating DNSLink for ${RECORD_NAME} -> ${RECORD_CONTENT}"
+
+          if [ -n "${CF_DNSLINK_RECORD_ID:-}" ]; then
+            RECORD_ID="${CF_DNSLINK_RECORD_ID}"
+            echo "Using CF_DNSLINK_RECORD_ID: ${RECORD_ID}"
+          else
+            RESPONSE=$(curl -sS "${CF_API}/zones/${CF_ZONE_ID}/dns_records?type=TXT&name=${RECORD_NAME}" \
+              -H "Authorization: Bearer ${CF_API_TOKEN}" \
+              -H "Content-Type: application/json")
+
+            if [ "$(echo "$RESPONSE" | jq -r '.success')" != "true" ]; then
+              echo "Cloudflare list error:"
+              echo "$RESPONSE" | jq .
+              exit 1
+            fi
+
+            COUNT=$(echo "$RESPONSE" | jq '.result | length')
+            if [ "$COUNT" -eq 0 ]; then
+              RECORD_ID=""
+            elif [ "$COUNT" -eq 1 ]; then
+              RECORD_ID=$(echo "$RESPONSE" | jq -r '.result[0].id')
+            else
+              echo "Found ${COUNT} TXT records for ${RECORD_NAME}. Remove duplicates in Cloudflare first."
+              echo "$RESPONSE" | jq '.result[] | {id, name, content}'
+              exit 1
+            fi
+          fi
+
+          PAYLOAD=$(jq -n \
+            --arg type "TXT" \
+            --arg name "$RECORD_NAME" \
+            --arg content "$RECORD_CONTENT" \
+            --argjson ttl 60 \
+            '{type: $type, name: $name, content: $content, ttl: $ttl}')
+
+          if [ -z "${RECORD_ID:-}" ]; then
+            echo "Creating DNSLink TXT record..."
+            RESULT=$(curl -sS -w "\nHTTP_STATUS:%{http_code}\n" -X POST \
+              "${CF_API}/zones/${CF_ZONE_ID}/dns_records" \
+              -H "Authorization: Bearer ${CF_API_TOKEN}" \
+              -H "Content-Type: application/json" \
+              --data "$PAYLOAD")
+          else
+            echo "Updating DNSLink TXT record ${RECORD_ID}..."
+            RESULT=$(curl -sS -w "\nHTTP_STATUS:%{http_code}\n" -X PUT \
+              "${CF_API}/zones/${CF_ZONE_ID}/dns_records/${RECORD_ID}" \
+              -H "Authorization: Bearer ${CF_API_TOKEN}" \
+              -H "Content-Type: application/json" \
+              --data "$PAYLOAD")
+          fi
+
+          HTTP_STATUS=$(echo "$RESULT" | tail -1 | cut -d: -f2)
+          BODY=$(echo "$RESULT" | sed '$d')
+
+          if [ "$HTTP_STATUS" -lt 200 ] || [ "$HTTP_STATUS" -ge 300 ]; then
+            echo "Cloudflare API failed (HTTP ${HTTP_STATUS}):"
+            echo "$BODY" | jq . 2>/dev/null || echo "$BODY"
+            echo ""
+            echo "Check CF_API_TOKEN has DNS Edit on zone ${CF_ZONE_ID}."
+            exit 1
+          fi
+
+          if [ "$(echo "$BODY" | jq -r '.success')" != "true" ]; then
+            echo "Cloudflare API returned success=false:"
+            echo "$BODY" | jq .
+            exit 1
+          fi
+
+          echo "DNSLink updated successfully."
+          echo "$BODY" | jq -r '.result | {id, name, content, modified_on}'
 
       - name: Summary
         run: |
