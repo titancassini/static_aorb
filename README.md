@@ -38,9 +38,12 @@ Use **Secrets**, not **Variables**. Secrets are encrypted and hidden in logs; va
 | `PINATA_API_KEY` | Optional fallback | Legacy API key — only if not using JWT |
 | `PINATA_API_SECRET` | Optional fallback | Legacy secret — pair with API key |
 | `CF_ZONE_ID` | Yes | Cloudflare zone ID for `aorb.info` |
-| `CF_API_TOKEN` | Yes | Cloudflare token with **DNS Edit** |
+| `CF_API_TOKEN` | Yes | Cloudflare token with **Web3 Hostnames → Edit** on `aorb.info` (DNS Edit alone is not enough) |
+| `CF_WEB3_HOSTNAME_ID` | Optional | Web3 gateway ID if auto-discovery fails |
 
-You only need **`PINATA_JWT`** if your Pinata key is a V3 admin key (as in your screenshot). The legacy key pair is optional backup.
+**Important:** Because you use Cloudflare **Web3 Gateway**, the `_dnslink` TXT record is managed by Cloudflare — update it via the **Web3 API**, not the normal DNS API. Your token needs **Zone → Web3 Hostnames → Edit** in addition to (or instead of) DNS Edit.
+
+Manual fallback: Cloudflare dashboard → **Web3** → your gateway → **Edit** → set DNSLink to `/ipfs/<CID>` → **Reapply**.
 
 ## Manual deploy
 
