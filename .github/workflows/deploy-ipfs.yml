@@ -44,15 +44,13 @@ jobs:
 
       - name: Pin to Pinata
         id: pin
-        working-directory: .github/scripts
         env:
           PINATA_JWT: ${{ secrets.PINATA_JWT }}
           PINATA_API_KEY: ${{ secrets.PINATA_API_KEY }}
           PINATA_API_SECRET: ${{ secrets.PINATA_API_SECRET }}
           PIN_NAME: aorb.info
-        run: |
-          npm ci
-          node pin-site.mjs ../../deploy
+          MAX_PINS_TO_KEEP: '3'
+        run: node .github/scripts/pin-site.mjs deploy
 
       - name: Update Cloudflare Web3 DNSLink
         id: dnslink

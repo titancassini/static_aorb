@@ -1,16 +1,28 @@
 #!/usr/bin/env node
 /**
- * Upload a static site directory to Pinata public IPFS.
- * Prefers PINATA_JWT (V3 SDK). Falls back to legacy pinFileToIPFS key pair.
+ * Upload a static site to Pinata as one directory pin via pinFileToIPFS.
+ * Do NOT use V3 fileArray — it can count each file against your pin limit.
  */
 import fs from 'fs';
 import path from 'path';
-import { PinataSDK } from 'pinata';
 
 const deployDir = process.argv[2];
 if (!deployDir || !fs.existsSync(deployDir)) {
   console.error('Usage: node pin-site.mjs <deploy-directory>');
   process.exit(1);
+}
+
+const PIN_NAME = process.env.PIN_NAME || 'aorb.info';
+const MAX_PINS_TO_KEEP = Number(process.env.MAX_PINS_TO_KEEP || '3');
+
+function authHeaders(jwt, apiKey, apiSecret) {
+  if (jwt) {
+    return { Authorization: `Bearer ${jwt}` };
+  }
+  return {
+    pinata_api_key: apiKey,
+    pinata_secret_api_key: apiSecret,
+  };
 }
 
 function walk(dir, base = dir) {
@@ -29,56 +41,77 @@ function walk(dir, base = dir) {
   return out;
 }
 
-function toFileArray(files) {
-  return files.map(({ full, rel }) => {
-    const data = fs.readFileSync(full);
-    return new File([data], rel, { type: 'application/octet-stream' });
+async function listPins(headers) {
+  const url = new URL('https://api.pinata.cloud/data/pinList');
+  url.searchParams.set('status', 'pinned');
+  url.searchParams.set('metadata[name]', PIN_NAME);
+  url.searchParams.set('pageLimit', '100');
+
+  const res = await fetch(url, { headers });
+  const body = await res.json();
+  if (!res.ok || !body.rows) {
+    console.warn('Could not list existing pins:', JSON.stringify(body));
+    return [];
+  }
+  return body.rows;
+}
+
+async function unpinCid(headers, cid) {
+  const res = await fetch(`https://api.pinata.cloud/pinning/unpin/${cid}`, {
+    method: 'DELETE',
+    headers,
   });
+  if (!res.ok) {
+    console.warn(`Failed to unpin ${cid}: ${await res.text()}`);
+    return false;
+  }
+  console.log(`Unpinned old deploy: ${cid}`);
+  return true;
 }
 
-async function pinWithJwt(jwt, files) {
-  const pinata = new PinataSDK({ pinataJwt: jwt });
-  await pinata.testAuthentication();
-
-  const upload = await pinata.upload.public.fileArray(toFileArray(files));
-  const cid = upload.cid || upload.IpfsHash;
-  if (!cid) {
-    throw new Error(`Pinata V3 response missing CID: ${JSON.stringify(upload)}`);
-  }
-  return cid;
-}
-
-async function pinWithLegacyKeys(apiKey, apiSecret, files) {
-  const form = new FormData();
-  for (const { full, rel } of files) {
-    const blob = new Blob([fs.readFileSync(full)]);
-    form.append('file', blob, rel);
+async function cleanupOldPins(headers) {
+  const rows = await listPins(headers);
+  if (rows.length <= MAX_PINS_TO_KEEP) {
+    console.log(`Keeping ${rows.length} existing pin(s) named ${PIN_NAME}.`);
+    return;
   }
 
-  form.append(
-    'pinataMetadata',
-    JSON.stringify({ name: process.env.PIN_NAME || 'aorb.info' })
+  const sorted = rows.sort(
+    (a, b) => new Date(b.date_pinned) - new Date(a.date_pinned)
   );
-  // Do not set wrapWithDirectory when sending many files — Pinata rejects that combo.
+  const toRemove = sorted.slice(MAX_PINS_TO_KEEP);
+  console.log(
+    `Removing ${toRemove.length} old pin(s); keeping ${MAX_PINS_TO_KEEP} most recent.`
+  );
+  for (const row of toRemove) {
+    await unpinCid(headers, row.ipfs_pin_hash);
+  }
+}
+
+async function pinFolder(headers, files) {
+  const form = new FormData();
+
+  for (const { full, rel } of files) {
+    form.append('file', new Blob([fs.readFileSync(full)]), rel);
+  }
+
+  form.append('pinataMetadata', JSON.stringify({ name: PIN_NAME }));
   form.append('pinataOptions', JSON.stringify({ cidVersion: 1 }));
 
   const res = await fetch('https://api.pinata.cloud/pinning/pinFileToIPFS', {
     method: 'POST',
-    headers: {
-      pinata_api_key: apiKey,
-      pinata_secret_api_key: apiSecret,
-    },
+    headers,
     body: form,
   });
 
   const body = await res.text();
   if (!res.ok) {
-    throw new Error(`Pinata legacy upload failed (${res.status}): ${body}`);
+    throw new Error(`Pinata folder upload failed (${res.status}): ${body}`);
   }
 
   const json = JSON.parse(body);
   if (!json.IpfsHash) {
-    throw new Error(`Pinata legacy response missing IpfsHash: ${body}`);
+    throw new Error(`Pinata response missing IpfsHash: ${body}`);
   }
   return json.IpfsHash;
 }
@@ -90,28 +123,23 @@ async function pinDirectory(dir) {
 
   if (!jwt && !(apiKey && apiSecret)) {
     throw new Error(
-      'Missing Pinata credentials. Add PINATA_JWT (recommended) or PINATA_API_KEY + PINATA_API_SECRET as GitHub repository secrets.'
+      'Missing Pinata credentials. Add PINATA_JWT or PINATA_API_KEY + PINATA_API_SECRET.'
     );
   }
 
+  const headers = authHeaders(jwt, apiKey, apiSecret);
   const files = walk(dir);
   if (files.length === 0) {
     throw new Error(`No files found in ${dir}`);
   }
 
-  console.log(`Uploading ${files.length} files from ${dir}...`);
-
-  if (jwt) {
-    console.log('Using Pinata V3 upload (JWT)...');
-    return pinWithJwt(jwt, files);
-  }
-
-  console.log('Using Pinata legacy upload (API key pair)...');
-  return pinWithLegacyKeys(apiKey, apiSecret, files);
+  console.log(`Uploading ${files.length} files as one directory pin...`);
+  await cleanupOldPins(headers);
+  return pinFolder(headers, files);
 }
 
 const cid = await pinDirectory(deployDir);
-console.log(`Pinned CID: ${cid}`);
+console.log(`Pinned directory CID: ${cid}`);
 
 const outputFile = process.env.GITHUB_OUTPUT;
 if (outputFile) {
