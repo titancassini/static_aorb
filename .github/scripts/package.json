@@ -1,0 +1,8 @@
+{
+  "name": "static-aorb-deploy",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "pinata": "^2.5.1"
+  }
+}

@@ -26,19 +26,21 @@ Configure once under **Simply Static → Settings**:
 
 If you keep ZIP delivery, the publish script falls back to the latest folder under `wp-content/uploads/simply-static/temp-files/`.
 
-## GitHub secrets
+## GitHub secrets (not variables)
 
-Add these at **Settings → Secrets and variables → Actions**:
+Add these under **Settings → Secrets and variables → Actions → Repository secrets**.
 
-| Secret | Description |
-|--------|-------------|
-| `PINATA_JWT` | **Recommended.** Pinata JWT from [API keys](https://app.pinata.cloud/developers/api-keys) with **pinFileToIPFS** permission |
-| `PINATA_API_KEY` | Optional fallback if not using JWT (legacy key pair) |
-| `PINATA_API_SECRET` | Optional fallback — pair with `PINATA_API_KEY` |
-| `CF_ZONE_ID` | Cloudflare zone ID for `aorb.info` |
-| `CF_API_TOKEN` | Cloudflare API token with **DNS Edit** on that zone |
+Use **Secrets**, not **Variables**. Secrets are encrypted and hidden in logs; variables are plain text and wrong for API keys.
 
-Set **`PINATA_JWT`** *or* both **`PINATA_API_KEY`** + **`PINATA_API_SECRET`**.
+| Secret | Required? | Description |
+|--------|-----------|-------------|
+| `PINATA_JWT` | **Yes** (recommended) | JWT from your Pinata **aorb** admin key |
+| `PINATA_API_KEY` | Optional fallback | Legacy API key — only if not using JWT |
+| `PINATA_API_SECRET` | Optional fallback | Legacy secret — pair with API key |
+| `CF_ZONE_ID` | Yes | Cloudflare zone ID for `aorb.info` |
+| `CF_API_TOKEN` | Yes | Cloudflare token with **DNS Edit** |
+
+You only need **`PINATA_JWT`** if your Pinata key is a V3 admin key (as in your screenshot). The legacy key pair is optional backup.
 
 ## Manual deploy
 

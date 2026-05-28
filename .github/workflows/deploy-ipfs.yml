@@ -44,12 +44,15 @@ jobs:
 
       - name: Pin to Pinata
         id: pin
+        working-directory: .github/scripts
         env:
           PINATA_JWT: ${{ secrets.PINATA_JWT }}
           PINATA_API_KEY: ${{ secrets.PINATA_API_KEY }}
           PINATA_API_SECRET: ${{ secrets.PINATA_API_SECRET }}
           PIN_NAME: aorb.info
-        run: node .github/scripts/pin-site.mjs deploy
+        run: |
+          npm ci
+          node pin-site.mjs ../../deploy
 
       - name: Update Cloudflare DNSLink
         uses: ipshipyard/dnslink-action@v1

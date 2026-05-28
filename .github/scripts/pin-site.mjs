@@ -1,10 +1,11 @@
 #!/usr/bin/env node
 /**
- * Upload a static site directory to Pinata (public IPFS) via pinFileToIPFS.
- * Requires PINATA_JWT, or PINATA_API_KEY + PINATA_API_SECRET.
+ * Upload a static site directory to Pinata public IPFS.
+ * Prefers PINATA_JWT (V3 SDK). Falls back to legacy pinFileToIPFS key pair.
  */
 import fs from 'fs';
 import path from 'path';
+import { PinataSDK } from 'pinata';
 
 const deployDir = process.argv[2];
 if (!deployDir || !fs.existsSync(deployDir)) {
@@ -28,24 +29,26 @@ function walk(dir, base = dir) {
   return out;
 }
 
-async function pinDirectory(dir) {
-  const jwt = process.env.PINATA_JWT;
-  const apiKey = process.env.PINATA_API_KEY;
-  const apiSecret = process.env.PINATA_API_SECRET;
+function toFileArray(files) {
+  return files.map(({ full, rel }) => {
+    const data = fs.readFileSync(full);
+    return new File([data], rel, { type: 'application/octet-stream' });
+  });
+}
 
-  if (!jwt && !(apiKey && apiSecret)) {
-    throw new Error(
-      'Missing Pinata credentials. Set PINATA_JWT or PINATA_API_KEY + PINATA_API_SECRET in GitHub secrets.'
-    );
+async function pinWithJwt(jwt, files) {
+  const pinata = new PinataSDK({ pinataJwt: jwt });
+  await pinata.testAuthentication();
+
+  const upload = await pinata.upload.public.fileArray(toFileArray(files));
+  const cid = upload.cid || upload.IpfsHash;
+  if (!cid) {
+    throw new Error(`Pinata V3 response missing CID: ${JSON.stringify(upload)}`);
   }
+  return cid;
+}
 
-  const files = walk(dir);
-  if (files.length === 0) {
-    throw new Error(`No files found in ${dir}`);
-  }
-
-  console.log(`Uploading ${files.length} files from ${dir}...`);
-
+async function pinWithLegacyKeys(apiKey, apiSecret, files) {
   const form = new FormData();
   for (const { full, rel } of files) {
     const blob = new Blob([fs.readFileSync(full)]);
@@ -56,36 +59,55 @@ async function pinDirectory(dir) {
     'pinataMetadata',
     JSON.stringify({ name: process.env.PIN_NAME || 'aorb.info' })
   );
-  form.append(
-    'pinataOptions',
-    JSON.stringify({ cidVersion: 1, wrapWithDirectory: true })
-  );
-
-  /** @type {Record<string, string>} */
-  const headers = jwt
-    ? { Authorization: `Bearer ${jwt}` }
-    : {
-        pinata_api_key: apiKey,
-        pinata_secret_api_key: apiSecret,
-      };
+  // Do not set wrapWithDirectory when sending many files — Pinata rejects that combo.
+  form.append('pinataOptions', JSON.stringify({ cidVersion: 1 }));
 
   const res = await fetch('https://api.pinata.cloud/pinning/pinFileToIPFS', {
     method: 'POST',
-    headers,
+    headers: {
+      pinata_api_key: apiKey,
+      pinata_secret_api_key: apiSecret,
+    },
     body: form,
   });
 
   const body = await res.text();
   if (!res.ok) {
-    throw new Error(`Pinata upload failed (${res.status}): ${body}`);
+    throw new Error(`Pinata legacy upload failed (${res.status}): ${body}`);
   }
 
   const json = JSON.parse(body);
   if (!json.IpfsHash) {
-    throw new Error(`Pinata response missing IpfsHash: ${body}`);
+    throw new Error(`Pinata legacy response missing IpfsHash: ${body}`);
+  }
+  return json.IpfsHash;
+}
+
+async function pinDirectory(dir) {
+  const jwt = process.env.PINATA_JWT;
+  const apiKey = process.env.PINATA_API_KEY;
+  const apiSecret = process.env.PINATA_API_SECRET;
+
+  if (!jwt && !(apiKey && apiSecret)) {
+    throw new Error(
+      'Missing Pinata credentials. Add PINATA_JWT (recommended) or PINATA_API_KEY + PINATA_API_SECRET as GitHub repository secrets.'
+    );
   }
 
-  return json.IpfsHash;
+  const files = walk(dir);
+  if (files.length === 0) {
+    throw new Error(`No files found in ${dir}`);
+  }
+
+  console.log(`Uploading ${files.length} files from ${dir}...`);
+
+  if (jwt) {
+    console.log('Using Pinata V3 upload (JWT)...');
+    return pinWithJwt(jwt, files);
+  }
+
+  console.log('Using Pinata legacy upload (API key pair)...');
+  return pinWithLegacyKeys(apiKey, apiSecret, files);
 }
 
 const cid = await pinDirectory(deployDir);
