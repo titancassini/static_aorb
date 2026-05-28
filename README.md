@@ -32,10 +32,13 @@ Add these at **Settings → Secrets and variables → Actions**:
 
 | Secret | Description |
 |--------|-------------|
-| `PINATA_API_KEY` | Pinata API key ([Pinata keys](https://app.pinata.cloud/developers/api-keys)) |
-| `PINATA_API_SECRET` | Pinata API secret |
+| `PINATA_JWT` | **Recommended.** Pinata JWT from [API keys](https://app.pinata.cloud/developers/api-keys) with **pinFileToIPFS** permission |
+| `PINATA_API_KEY` | Optional fallback if not using JWT (legacy key pair) |
+| `PINATA_API_SECRET` | Optional fallback — pair with `PINATA_API_KEY` |
 | `CF_ZONE_ID` | Cloudflare zone ID for `aorb.info` |
 | `CF_API_TOKEN` | Cloudflare API token with **DNS Edit** on that zone |
+
+Set **`PINATA_JWT`** *or* both **`PINATA_API_KEY`** + **`PINATA_API_SECRET`**.
 
 ## Manual deploy
 

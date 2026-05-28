@@ -8,13 +8,15 @@ on:
     paths-ignore:
       - 'README.md'
       - 'LICENSE'
-      - 'scripts/**'
-      - '.github/**'
+      - 'scripts/publish-from-local.sh'
   workflow_dispatch:
 
 concurrency:
   group: deploy-ipfs
   cancel-in-progress: true
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
   deploy:
@@ -26,15 +28,28 @@ jobs:
       - name: Verify static site root
         run: test -f index.html
 
+      - name: Prepare deploy bundle
+        run: |
+          mkdir -p deploy
+          rsync -a \
+            --exclude='.git/' \
+            --exclude='.github/' \
+            --exclude='scripts/' \
+            --exclude='deploy/' \
+            --exclude='README.md' \
+            --exclude='LICENSE' \
+            --exclude='.gitignore' \
+            ./ deploy/
+          echo "Files to upload: $(find deploy -type f | wc -l)"
+
       - name: Pin to Pinata
         id: pin
-        uses: VenusProtocol/pinata-action@main
-        with:
-          path: .
-          pinName: aorb.info
-          maxPinsToKeep: 5
-          pinataApiKey: ${{ secrets.PINATA_API_KEY }}
-          pinataApiSecret: ${{ secrets.PINATA_API_SECRET }}
+        env:
+          PINATA_JWT: ${{ secrets.PINATA_JWT }}
+          PINATA_API_KEY: ${{ secrets.PINATA_API_KEY }}
+          PINATA_API_SECRET: ${{ secrets.PINATA_API_SECRET }}
+          PIN_NAME: aorb.info
+        run: node .github/scripts/pin-site.mjs deploy
 
       - name: Update Cloudflare DNSLink
         uses: ipshipyard/dnslink-action@v1
