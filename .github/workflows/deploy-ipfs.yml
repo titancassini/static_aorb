@@ -1,0 +1,54 @@
+name: Deploy to IPFS
+
+on:
+  push:
+    branches:
+      - master
+      - main
+    paths-ignore:
+      - 'README.md'
+      - 'LICENSE'
+      - 'scripts/**'
+      - '.github/**'
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-ipfs
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Verify static site root
+        run: test -f index.html
+
+      - name: Pin to Pinata
+        id: pin
+        uses: VenusProtocol/pinata-action@main
+        with:
+          path: .
+          pinName: aorb.info
+          maxPinsToKeep: 5
+          pinataApiKey: ${{ secrets.PINATA_API_KEY }}
+          pinataApiSecret: ${{ secrets.PINATA_API_SECRET }}
+
+      - name: Update Cloudflare DNSLink
+        uses: ipshipyard/dnslink-action@v1
+        with:
+          cid: ${{ steps.pin.outputs.cid }}
+          dnslink_domain: aorb.info
+          cf_zone_id: ${{ secrets.CF_ZONE_ID }}
+          cf_auth_token: ${{ secrets.CF_API_TOKEN }}
+          set_github_status: true
+          github_token: ${{ github.token }}
+
+      - name: Summary
+        run: |
+          echo "### Deployed to IPFS" >> "$GITHUB_STEP_SUMMARY"
+          echo "- **CID:** \`${{ steps.pin.outputs.cid }}\`" >> "$GITHUB_STEP_SUMMARY"
+          echo "- **Gateway:** https://gateway.pinata.cloud/ipfs/${{ steps.pin.outputs.cid }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "- **DNSLink:** _dnslink.aorb.info → dnslink=/ipfs/${{ steps.pin.outputs.cid }}" >> "$GITHUB_STEP_SUMMARY"
