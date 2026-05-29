@@ -90,12 +90,15 @@ async function cleanupOldPins(headers) {
 
 async function pinFolder(headers, files) {
   const form = new FormData();
+  // Pinata treats each top-level multipart filename as a separate pin unless
+  // every file shares one root folder. Metadata name must match that root.
+  const root = PIN_NAME;
 
   for (const { full, rel } of files) {
-    form.append('file', new Blob([fs.readFileSync(full)]), rel);
+    form.append('file', new Blob([fs.readFileSync(full)]), `${root}/${rel}`);
   }
 
-  form.append('pinataMetadata', JSON.stringify({ name: PIN_NAME }));
+  form.append('pinataMetadata', JSON.stringify({ name: root }));
   form.append('pinataOptions', JSON.stringify({ cidVersion: 1 }));
 
   const res = await fetch('https://api.pinata.cloud/pinning/pinFileToIPFS', {
